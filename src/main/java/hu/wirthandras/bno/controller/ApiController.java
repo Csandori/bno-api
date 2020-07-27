@@ -2,33 +2,41 @@ package hu.wirthandras.bno.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hu.wirthandras.bno.domain.Bno;
-import hu.wirthandras.bno.service.ReadService;
+import hu.wirthandras.bno.domain.Gender;
+import hu.wirthandras.bno.service.FilterService;
+import hu.wirthandras.bno.service.GenderService;
 
 @RestController
+@RequestMapping("api/bno")
 public class ApiController {
 
 	@Autowired
-	private ReadService readService;
+	private FilterService filterService;
 	
-	@GetMapping(value = "/api/list", produces = { "application/json" })
+	@Autowired
+	private GenderService genderService;
+	
+	@GetMapping(value = "/list", produces = { "application/json" })
 	public List<Bno> getData(
 			@RequestParam(value = "code", required = false) Optional<String> code,
-			@RequestParam(value = "name", required = false) Optional<String> name) {
+			@RequestParam(value = "name", required = false) Optional<String> name,
+			@RequestParam(value = "signal", required = false) Optional<String> signal,
+			@RequestParam(value = "sex", required = false) Optional<String> sex
+			) {
 		
-			return readService.getBnos()
-					.stream()
-					.filter(c ->
-			(code.isPresent() ? c.KOD10.contains(code.get()) : true) && 
-			(name.isPresent() ? c.NEV.contains(name.get()) : true)
-			)
-					.collect(Collectors.toList());
+			return filterService.filter(code, name, signal, sex);
+	}
+	
+	@GetMapping(value = "/genders", produces = { "application/json" })
+	public List<Gender> getGenders() {
+		return genderService.listGenders();
 	}
 }
