@@ -29,10 +29,13 @@ public class ApiController {
 			@RequestParam(value = "code", required = false) Optional<String> code,
 			@RequestParam(value = "name", required = false) Optional<String> name,
 			@RequestParam(value = "signal", required = false) Optional<String> signal,
-			@RequestParam(value = "sex", required = false) Optional<String> sex
+			@RequestParam(value = "sex", required = false) Optional<String> sex,
+			@RequestParam(value = "general", required = false) Optional<String> general,
+			@RequestParam(value = "page", required = false) Optional<Integer> page,
+			@RequestParam(value = "limit", required = false) Optional<Integer> limit
 			) {
 		
-			return filterService.filter(code, name, signal, sex);
+			return filterService.filter(code, name, signal, sex, general, page, limit);
 	}
 	
 	@GetMapping(value = "/genders", produces = { "application/json" })
